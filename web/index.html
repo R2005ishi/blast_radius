@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BlastRadius · CVE triage agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+:root {
+  --ground: #0d1117; --panel: #151a22; --elevated: #1b212b; --raised: #222935;
+  --seam: #262c36; --line: #30363d; --muted: #8b949e; --text: #e6edf3; --dim: #6e7681;
+  --keyword: #79c0ff; --string: #56d364; --number: #d2a8ff; --warning: #e3b341; --destructive: #ff6b61;
+  --primary: #1f6feb; --primary-hover: #388bfd;
+  --sans: "Lexend", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --r: 6px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--ground); color: var(--text); font: 400 15px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+button, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--keyword); outline-offset: 2px; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* shell */
+.app { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
+.top { display: flex; align-items: center; gap: 20px; padding: 0 20px; height: 52px; background: var(--panel); border-bottom: 1px solid var(--seam); }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 18px; letter-spacing: -0.01em; }
+.brand svg { width: 24px; height: 24px; }
+.stats { display: flex; gap: 18px; color: var(--muted); font-size: 13px; padding-left: 20px; border-left: 1px solid var(--seam); }
+.stats b { color: var(--text); font: 500 13px var(--mono); }
+.mode { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); white-space: nowrap; }
+.mode .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); }
+.mode[data-mode="live"] .dot { background: var(--string); }
+.mode[data-mode="replay"] { border-color: #5a4a1d; color: var(--warning); }
+.mode[data-mode="replay"] .dot { background: var(--warning); }
+
+.grid { display: grid; grid-template-columns: minmax(330px, 380px) minmax(0, 1fr) minmax(330px, 410px); gap: 1px; background: var(--seam); min-height: 0; }
+.panel { background: var(--panel); min-height: 0; display: flex; flex-direction: column; }
+.panel > .scroll { overflow: auto; min-height: 0; flex: 1; }
+.ph { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--seam); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); min-height: 44px; }
+.ph .count { font: 500 12px var(--mono); color: var(--text); letter-spacing: 0; }
+.ph .right { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400; }
+.sect { padding: 16px 18px; }
+.sect + .sect { border-top: 1px solid var(--seam); }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: var(--r); border: 1px solid var(--line); background: transparent; cursor: pointer; font-weight: 500; font-size: 15px; transition: background-color .15s, border-color .15s; }
+.btn:hover:not(:disabled) { background: var(--elevated); border-color: #3d444d; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.primary { background: var(--primary); border-color: var(--primary); color: var(--text); }
+.btn.primary:hover:not(:disabled) { background: var(--primary-hover); border-color: var(--primary-hover); }
+.btn i { font-size: 18px; }
+.spin { animation: spin 0.9s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ask */
+textarea { width: 100%; min-height: 92px; resize: vertical; background: var(--ground); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; line-height: 1.5; font-size: 15px; transition: border-color .15s; }
+textarea:hover { border-color: #3d444d; }
+textarea:focus { outline: none; border-color: var(--keyword); }
+.ask-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+.ask-row .btn.primary { flex: 1; }
+.kbd { font: 12px var(--mono); color: var(--muted); }
+.suggest { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.suggest button { text-align: left; background: transparent; border: 1px solid transparent; border-radius: var(--r); padding: 6px 8px; margin: 0 -8px; color: var(--muted); font-size: 13px; cursor: pointer; display: flex; gap: 8px; align-items: baseline; }
+.suggest button:hover { color: var(--text); background: var(--elevated); }
+.suggest button i { color: var(--keyword); font-size: 15px; position: relative; top: 2px; }
+.err { color: var(--destructive); font-size: 13px; margin-top: 10px; }
+
+/* steps */
+.steps { list-style: none; margin: 0; padding: 0; }
+.step { padding: 12px 18px; border-bottom: 1px solid var(--seam); animation: in .25s cubic-bezier(.2,.8,.2,1); }
+@keyframes in { from { opacity: 0; transform: translateY(4px); } }
+.step-head { display: flex; gap: 10px; align-items: baseline; }
+.step-n { font: 12px var(--mono); color: var(--muted); min-width: 18px; }
+.step-tool { font: 500 15px var(--mono); color: var(--keyword); }
+.step-args { font: 13px var(--mono); color: var(--muted); margin: 4px 0 0 28px; word-break: break-word; }
+.step-args .v { color: var(--string); }
+.step-sum { margin: 6px 0 0 28px; font-size: 15px; }
+.step-sum.bad { color: var(--destructive); }
+details.cy { margin: 8px 0 0 28px; }
+details.cy summary { cursor: pointer; font-size: 13px; color: var(--muted); list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+details.cy summary::-webkit-details-marker { display: none; }
+details.cy summary:hover { color: var(--text); }
+details.cy[open] summary i { transform: rotate(90deg); }
+details.cy summary i { transition: transform .15s; }
+pre.code { margin: 8px 0 0; padding: 10px 12px; background: var(--ground); border: 1px solid var(--seam); border-radius: var(--r); font: 12px/1.6 var(--mono); white-space: pre-wrap; word-break: break-word; color: #c9d1d9; }
+pre.code + pre.code { margin-top: 6px; }
+.k { color: var(--keyword); } .s { color: var(--string); } .n { color: var(--number); }
+.thinking { display: flex; align-items: center; gap: 10px; padding: 14px 18px; color: var(--muted); font-size: 15px; }
+.thinking .bar { flex: 1; height: 6px; border-radius: 4px; background: linear-gradient(90deg, var(--elevated) 0, var(--raised) 50%, var(--elevated) 100%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* blast */
+.blast-head { padding: 14px 20px; border-bottom: 1px solid var(--seam); display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; }
+.blast-head h2 { margin: 0; font: 500 23px var(--mono); letter-spacing: -0.01em; }
+.blast-head .alias { font: 15px var(--mono); color: var(--muted); }
+.blast-head .summary { flex-basis: 100%; color: var(--muted); font-size: 15px; }
+.sev { font: 500 12px var(--mono); padding: 2px 8px; border-radius: 4px; border: 1px solid; }
+.sev.high, .sev.critical { color: var(--destructive); border-color: #6e2a26; background: #2a1414; }
+.sev.moderate { color: var(--warning); border-color: #5a4a1d; background: #261f0d; }
+.sev.low { color: var(--muted); border-color: var(--line); }
+.canvas-wrap { flex: 1; overflow: auto; min-height: 0; position: relative; background: radial-gradient(circle, var(--seam) 1px, transparent 1.2px) 0 0 / 18px 18px; }
+.canvas { position: relative; display: inline-flex; gap: 52px; padding: 24px 28px 28px; min-width: 100%; min-height: 100%; align-items: center; }
+.canvas svg.edges { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.col { display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 1; }
+.col.chain { gap: 26px; }
+.col-label { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; white-space: nowrap; }
+.node { display: block; text-align: left; min-width: 120px; padding: 7px 11px; border-radius: var(--r); background: var(--elevated); border: 1px solid var(--line); font: 13px/1.35 var(--mono); color: var(--text); white-space: nowrap; }
+.node small { display: block; color: var(--muted); font-size: 12px; }
+.node.cve { border-color: #6e2a26; background: #2a1414; }
+.node.cve small { color: var(--destructive); }
+.node.vuln { border-color: #6e2a26; }
+.node.svc { border-color: var(--keyword); background: var(--elevated); padding: 10px 14px; font-size: 15px; font-weight: 500; }
+.node.svc small { font-weight: 400; }
+button.node { cursor: pointer; transition: border-color .15s, background-color .15s; }
+button.node:hover { border-color: var(--keyword); }
+.node .tag { display: inline-block; margin-left: 8px; font-size: 12px; color: var(--warning); border: 1px solid #5a4a1d; border-radius: 4px; padding: 0 4px; vertical-align: 1px; }
+.edges path { fill: none; stroke-width: 2; }
+.edges path.p { stroke: #ff6b61; stroke-width: 2.5; }
+.edges path.d { stroke: #4b8ad6; }
+@media (prefers-reduced-motion: no-preference) {
+  .edges path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw .55s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+}
+.local { position: relative; z-index: 1; flex: 0 0 220px; color: var(--muted); font-size: 15px; border: 1px dashed var(--line); border-radius: var(--r); padding: 12px 14px; align-self: center; }
+.local b { color: var(--string); font-weight: 500; }
+.legend { display: flex; gap: 16px; padding: 10px 20px; border-top: 1px solid var(--seam); font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend .ln { width: 18px; height: 0; border-top: 2px solid; }
+.empty { padding: 28px 24px; color: var(--muted); max-width: 560px; }
+.empty h3 { margin: 0 0 8px; color: var(--text); font-size: 18px; font-weight: 500; }
+.empty p { margin: 0 0 12px; }
+.empty ol { margin: 0; padding-left: 20px; }
+.empty li { margin: 4px 0; }
+
+/* answer */
+.answer { border-top: 1px solid var(--seam); }
+.answer .body { padding: 4px 18px 22px; font-size: 15px; }
+.answer .body h3 { font-size: 15px; font-weight: 600; margin: 16px 0 6px; }
+.answer .body p { margin: 8px 0; }
+.answer .body ul, .answer .body ol { margin: 6px 0; padding-left: 20px; }
+.answer .body li { margin: 4px 0; }
+.answer .body li.l2 { margin-left: 18px; list-style: circle; }
+.answer .body code { font: 13px var(--mono); background: var(--ground); border: 1px solid var(--seam); border-radius: 4px; padding: 0 4px; word-break: break-word; }
+.answer .body strong { font-weight: 600; }
+
+/* queue */
+.formula { font-size: 13px; color: var(--muted); padding: 10px 18px; border-bottom: 1px solid var(--seam); }
+.formula .mono { color: var(--text); font-size: 13px; }
+.q { list-style: none; margin: 0; padding: 8px; display: flex; flex-direction: column; gap: 2px; }
+.qrow { width: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto 52px; gap: 12px; align-items: center; text-align: left; background: transparent; border: 1px solid transparent; border-radius: var(--r); padding: 7px 10px; cursor: pointer; transition: background-color .15s, border-color .15s; }
+.qrow:hover { background: var(--elevated); }
+.qrow[aria-pressed="true"] { background: var(--elevated); border-color: var(--keyword); }
+.qrow .name { font: 500 15px var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qrow .score { font: 500 15px var(--mono); color: var(--number); text-align: right; }
+.qrow .meta { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.prio { font: 600 12px var(--mono); padding: 3px 7px; border-radius: 4px; border: 1px solid; min-width: 32px; text-align: center; }
+.prio.P0 { color: var(--text); background: #b62324; border-color: #b62324; }
+.prio.P1 { color: var(--warning); background: #261f0d; border-color: #5a4a1d; }
+.prio.P2 { color: var(--muted); border-color: var(--line); }
+.prio.none { color: var(--dim); border-color: var(--seam); }
+.detail { border-top: 1px solid var(--seam); padding: 16px 18px 20px; }
+.detail h3 { margin: 0; font: 500 23px var(--mono); }
+.detail .act { margin: 4px 0 12px; font-size: 15px; }
+.detail .act.P0 { color: var(--destructive); }
+.detail .act.P1 { color: var(--warning); }
+.calc { font: 13px var(--mono); background: var(--ground); border: 1px solid var(--seam); border-radius: var(--r); padding: 10px 12px; }
+.calc .n { font-weight: 500; }
+.reasons { margin: 12px 0; padding-left: 18px; color: #c9d1d9; font-size: 15px; }
+.reasons li { margin: 4px 0; }
+.fix { display: flex; gap: 8px; align-items: baseline; font-size: 15px; }
+.fix i { color: var(--string); }
+.fix code { font: 500 13px var(--mono); }
+.approve { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--seam); }
+.approve p { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+.approve .btn { width: 100%; }
+.filed { display: flex; gap: 8px; align-items: flex-start; color: var(--string); font-size: 15px; }
+.filed code { font: 13px var(--mono); color: var(--text); word-break: break-all; }
+.banner { padding: 10px 18px; font-size: 13px; color: var(--warning); background: #261f0d; border-bottom: 1px solid #5a4a1d; display: flex; gap: 8px; align-items: flex-start; }
+
+/* responsive */
+@media (max-width: 1180px) {
+  .grid { grid-template-columns: minmax(300px, 340px) minmax(0, 1fr); }
+  .queue-panel { grid-column: 1 / -1; }
+  .stats .opt { display: none; }
+}
+@media (max-width: 820px) {
+  .app { height: auto; }
+  .top { height: auto; flex-wrap: wrap; padding: 10px 16px; gap: 8px 14px; }
+  .stats { order: 3; flex-basis: 100%; border: 0; padding: 0; gap: 12px; flex-wrap: wrap; }
+  .mode { margin-left: auto; }
+  .grid { grid-template-columns: 1fr; }
+  .panel { min-height: auto; }
+  .panel > .scroll { overflow: visible; }
+  .blast-panel .canvas-wrap { min-height: 360px; max-height: 70vh; }
+  .sect, .ph, .step, .formula, .detail { padding-left: 16px; padding-right: 16px; }
+  .ask-panel { order: 1; } .queue-panel { order: 2; } .blast-panel { order: 3; }
+  .ask-panel .steps-panel { max-height: 60vh; overflow: auto; } /* ponytail: steps stay in the ask panel; capped so the queue is reachable */
+}
+</style>
+</head>
+<body>
+<!--
+THESIS: The agent's reasoning is the interface: question, tool steps with their Cypher, the ranked triage queue, the drawn blast path and a human sign-off tile one graphite console. Refuses the neon force-graph SOC wallboard.
+OWN-WORLD: graphite ground #0d1117, panels #151a22 split by 1px #262c36 seams, no shadows; syntax accents only for state (keyword blue = selection and primary, number purple = scores, string green = filed, warning amber = P1 and replay, destructive red = P0 and the vulnerable path). Lexend for UI, JetBrains Mono for ids, Cypher and figures.
+STORY: A judge reads the question, watches tools stream with their Cypher, sees auth-service ranked P0 above pdf-export P2 with the formula's real numbers, sees the red path and 14 downstream services versus none, then clicks Approve and a file is written.
+FIRST VIEWPORT: top strip with graph counts and live/replay state; left column holds the question and the Run triage primary at top-left; centre is the blast canvas; right is the triage queue.
+FORM: dark-first developer console, chosen alternate (challenger 2 of the hand), seed 5345550a.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="6" cy="18" r="2.4" fill="#ff6b61"/><path d="M6 11.5a6.5 6.5 0 0 1 6.5 6.5" stroke="#79c0ff" stroke-width="1.6" stroke-linecap="round"/><path d="M6 6.5A11.5 11.5 0 0 1 17.5 18" stroke="#79c0ff" stroke-width="1.6" stroke-linecap="round" opacity=".6"/><path d="M6 1.5A16.5 16.5 0 0 1 22.5 18" stroke="#79c0ff" stroke-width="1.6" stroke-linecap="round" opacity=".3"/></svg>
+      BlastRadius
+    </div>
+    <div class="stats" id="stats" aria-live="polite">
+      <span>FalkorDB graph <b>blastradius</b></span>
+      <span><b id="st-s">–</b> services (synthetic)</span>
+      <span><b id="st-v">–</b> npm versions</span>
+      <span><b id="st-c">–</b> CVEs <span class="opt">from OSV</span></span>
+    </div>
+    <div class="mode" id="mode" data-mode="idle"><span class="dot"></span><span id="mode-text">Connecting…</span></div>
+  </header>
+
+  <main class="grid">
+    <section class="panel ask-panel" aria-labelledby="h-ask">
+      <div class="ph" id="h-ask">Question</div>
+        <form class="sect ask-form" id="ask">
+          <label class="sr" for="q">Question for the agent</label>
+          <textarea id="q" name="q" rows="3">Which services are exposed to CVE-2022-24999 and what should we do first?</textarea>
+          <div class="ask-row">
+            <button class="btn primary" id="run" type="submit"><i class="ti ti-player-play" aria-hidden="true"></i><span>Run triage</span></button>
+            <span class="kbd">Ctrl ↵</span>
+          </div>
+          <div class="err" id="ask-err" role="alert" hidden></div>
+          <div class="suggest" aria-label="Example questions">
+            <button type="button"><i class="ti ti-corner-down-right" aria-hidden="true"></i>Which services are exposed to CVE-2022-24999 and what should we do first?</button>
+            <button type="button"><i class="ti ti-corner-down-right" aria-hidden="true"></i>Which single upgrade fixes the most services?</button>
+            <button type="button"><i class="ti ti-corner-down-right" aria-hidden="true"></i>How does auth-service reach CVE-2022-24999?</button>
+          </div>
+        </form>
+      <div class="scroll">
+        <div class="steps-panel">
+          <div class="ph">Agent steps <span class="count" id="step-count"></span><span class="right muted" id="step-hint">tool · args · Cypher</span></div>
+          <div class="banner" id="banner" hidden><i class="ti ti-history" aria-hidden="true"></i><span id="banner-text"></span></div>
+          <ol class="steps" id="steps" aria-live="polite"></ol>
+          <div class="thinking" id="thinking" hidden><i class="ti ti-loader-2 spin" aria-hidden="true"></i><span>Agent is choosing a tool</span><span class="bar"></span></div>
+          <p class="sect muted" id="steps-empty">Each tool the agent calls shows up here with its arguments and the exact Cypher it ran against FalkorDB.</p>
+        </div>
+        <div class="answer" id="answer" hidden>
+          <div class="ph">Answer <span class="right muted mono" id="answer-model"></span></div>
+          <div class="body" id="answer-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel blast-panel" aria-labelledby="h-blast">
+      <div class="ph" id="h-blast">Blast radius <span class="right muted" id="blast-hint"></span></div>
+      <div class="blast-head" id="blast-head" hidden></div>
+      <div class="canvas-wrap" id="canvas-wrap">
+        <div class="empty" id="blast-empty">
+          <h3>Trace one CVE through the graph</h3>
+          <p>Run a question. The agent walks <span class="mono">DEPENDS_ON</span> and <span class="mono">CALLS</span> edges in FalkorDB, and this panel draws what it found:</p>
+          <ol>
+            <li>the dependency path from the advisory to the exposed service, in red</li>
+            <li>every service that calls into it, hop by hop, in blue</li>
+          </ol>
+        </div>
+      </div>
+      <div class="legend" id="legend" hidden>
+        <span><span class="ln" style="border-color:#ff6b61"></span>dependency path to the CVE</span>
+        <span><span class="ln" style="border-color:#4b8ad6"></span>blast spreads to callers</span>
+        <span><span class="node-tag-demo tag mono" style="color:var(--warning);border:1px solid #5a4a1d;border-radius:4px;padding:0 4px;font-size:12px">exposed</span>also has this CVE</span>
+      </div>
+    </section>
+
+    <section class="panel queue-panel" aria-labelledby="h-queue">
+      <div class="ph" id="h-queue">Triage queue <span class="count" id="q-count"></span></div>
+      <div class="formula">Ranked by <span class="mono">severity × (1 + downstream) ÷ depth</span>. P0 ≥ 20, P1 ≥ 8.</div>
+      <div class="scroll">
+        <ul class="q" id="queue"></ul>
+        <p class="sect muted" id="queue-empty">Drafts land here, ranked by score. Nothing is filed until a person approves it.</p>
+        <div class="detail" id="detail" hidden></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const ACT = { P0: "Patch now", P1: "Patch this sprint", P2: "Patch next sprint" };
+let S = fresh();
+let source = null;
+
+function fresh() {
+  return { steps: [], drafts: new Map(), exposed: [], cve: null, selected: null, picked: false, filed: {}, running: false, blastFor: null };
+}
+
+/* ---------- status ---------- */
+fetch("/api/status").then((r) => r.json()).then((s) => {
+  $("st-s").textContent = s.services; $("st-v").textContent = s.versions; $("st-c").textContent = s.cves;
+  setMode(s.key ? "live" : "replay", s.key ? `Live · ${s.model}` : (s.replays.length ? "Replay only · no API key" : "No API key"));
+}).catch(() => setMode("idle", "Graph offline: start FalkorDB"));
+
+function setMode(mode, text) { $("mode").dataset.mode = mode; $("mode-text").textContent = text; }
+
+/* ---------- ask ---------- */
+$("ask").addEventListener("submit", (e) => { e.preventDefault(); run($("q").value.trim()); });
+$("q").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); run($("q").value.trim()); } });
+$("q").addEventListener("input", () => { $("ask-err").hidden = true; });
+document.querySelectorAll(".suggest button").forEach((b) => b.addEventListener("click", () => { $("q").value = b.textContent.trim(); run($("q").value); }));
+
+function run(q) {
+  if (!q) { $("ask-err").textContent = "Type a question first, for example one that names a CVE."; $("ask-err").hidden = false; $("q").focus(); return; }
+  if (source) source.close();
+  S = fresh(); S.running = true;
+  $("steps").innerHTML = ""; $("banner").hidden = true; $("ask-err").hidden = true;
+  $("answer").hidden = true; $("detail").hidden = true;
+  renderQueue(); renderBlastEmpty(); renderRunning();
+  source = new EventSource("/api/ask?q=" + encodeURIComponent(q));
+  source.addEventListener("mode", (e) => {
+    const m = JSON.parse(e.data);
+    if (m.mode === "replay") {
+      S = { ...fresh(), running: true };
+      $("steps").innerHTML = ""; renderQueue(); renderBlastEmpty();
+      setMode("replay", `Replay · ${m.model}`);
+      $("banner-text").textContent = `Live run unavailable (${m.reason}). Replaying a recorded real run from ${m.recorded_at}` +
+        (m.question.toLowerCase() !== q.toLowerCase() ? ` for “${m.question}”.` : ".");
+      $("banner").hidden = false;
+    } else setMode("live", `Live · ${m.model}`);
+  });
+  source.addEventListener("step", (e) => addStep(JSON.parse(e.data)));
+  source.addEventListener("done", (e) => {
+    finish(); showAnswer(JSON.parse(e.data));
+    $("detail").querySelector(".approve")?.scrollIntoView({ block: "nearest" }); // sign-off in view for the auto-picked row
+  });
+  source.addEventListener("failed", (e) => { finish(); fail(JSON.parse(e.data).message); });
+  source.onerror = () => { if (S.running) { finish(); fail("Lost the connection to web.py. Is it still running?"); } };
+}
+
+function finish() { S.running = false; if (source) source.close(); source = null; renderRunning(); }
+function fail(msg) { $("ask-err").textContent = msg; $("ask-err").hidden = false; }
+
+function renderRunning() {
+  const b = $("run");
+  b.disabled = S.running;
+  b.innerHTML = S.running ? '<i class="ti ti-loader-2 spin" aria-hidden="true"></i><span>Agent running…</span>'
+                          : '<i class="ti ti-player-play" aria-hidden="true"></i><span>Run triage</span>';
+  $("thinking").hidden = !S.running;
+  $("steps-empty").hidden = S.running || S.steps.length > 0;
+  $("step-count").textContent = S.steps.length || "";
+}
+
+/* ---------- steps ---------- */
+function addStep(st) {
+  S.steps.push(st);
+  const r = st.result || {};
+  if (st.name === "find_exposed_services" && r.services) { S.exposed = r.services.map((x) => x.service); S.cve = S.cve || r.cve.id; }
+  if (st.name === "draft_remediation" && !r.error) { S.drafts.set(r.service, r); S.cve = S.cve || r.cve; }
+  if (!S.cve && st.args && st.args.cve_id && !r.error) S.cve = (r.cve && r.cve.id) || st.args.cve_id;
+
+  const li = document.createElement("li");
+  li.className = "step";
+  const args = Object.entries(st.args || {}).map(([k, v]) => `${esc(k)}=<span class="v">"${esc(v)}"</span>`).join("  ");
+  const cy = r.cypher || [];
+  li.innerHTML = `<div class="step-head"><span class="step-n">${S.steps.length}</span><span class="step-tool">${esc(st.name)}</span></div>
+    ${args ? `<div class="step-args">${args}</div>` : ""}
+    <div class="step-sum ${r.error ? "bad" : ""}">${summary(st.name, r)}</div>
+    ${cy.length ? `<details class="cy"><summary><i class="ti ti-chevron-right" aria-hidden="true"></i>Cypher · ${cy.length} quer${cy.length > 1 ? "ies" : "y"}</summary>${cy.map((c) => `<pre class="code">${hl(c)}</pre>`).join("")}</details>` : ""}`;
+  $("steps").appendChild(li);
+  li.scrollIntoView({ block: "nearest" });
+  renderRunning();
+  renderQueue();
+  const top = ranked()[0]; // follow the top of the queue until the viewer picks a row
+  if (top && !S.picked && top.service !== S.selected) select(top.service);
+}
+
+function summary(name, r) {
+  if (r.error) return esc(r.error);
+  if (name === "find_exposed_services") return `${r.services.length} services exposed to <span class="mono">${esc(r.cve.id)}</span>, severity <span class="mono n">${r.cve.severity}</span>`;
+  if (name === "show_path") return `<span class="mono">${r.path.map(esc).join(" → ")}</span>`;
+  if (name === "service_criticality") return `${r.downstream_count} downstream services · PageRank #${r.pagerank_rank}`;
+  if (name === "best_single_fix" && r.fixes && r.fixes[0]) { const f = r.fixes[0]; return `Upgrade <span class="mono">${esc(f.package_version)}</span> → <span class="mono s">${esc(f.fixed || "none")}</span>, clears ${f.services_cleared} services`; }
+  if (name === "draft_remediation") return `<span class="prio ${r.priority}">${r.priority}</span> ${ACT[r.priority]} · score <span class="mono n">${r.score}</span>`;
+  return "Done";
+}
+
+function hl(c) {
+  return esc(c).replace(/(&quot;(?:(?!&quot;).)*&quot;|'[^']*')|\b(MATCH|OPTIONAL|WHERE|RETURN|WITH|CALL|YIELD|ORDER BY|LIMIT|AS|OR|AND|IN|CASE|WHEN|THEN|ELSE|END|DISTINCT|DESC)\b|\b(\d+(?:\.\d+)?)\b/g,
+    (m, s, k, n) => s ? `<span class="s">${s}</span>` : k ? `<span class="k">${k}</span>` : `<span class="n">${n}</span>`);
+}
+
+/* ---------- queue ---------- */
+function ranked() {
+  const rows = [...S.drafts.values()].sort((a, b) => b.score - a.score || a.service.localeCompare(b.service));
+  for (const s of S.exposed) if (!S.drafts.has(s)) rows.push({ service: s, priority: null });
+  return rows;
+}
+
+function renderQueue() {
+  const rows = ranked();
+  $("q-count").textContent = rows.length || "";
+  $("queue-empty").hidden = rows.length > 0;
+  $("queue").innerHTML = rows.map((d) => `<li><button class="qrow" data-s="${esc(d.service)}" aria-pressed="${d.service === S.selected}">
+      <span class="prio ${d.priority || "none"}">${d.priority || "–"}</span>
+      <span class="name">${esc(d.service)}</span>
+      <span class="meta">${d.priority ? `${d.inputs.downstream} downstream${S.filed[d.service] ? " · filed" : ""}` : "no draft yet"}</span>
+      <span class="score">${d.priority ? d.score.toFixed(2) : ""}</span>
+    </button></li>`).join("");
+  $("queue").querySelectorAll(".qrow").forEach((b) => b.addEventListener("click", () => {
+    S.picked = true; select(b.dataset.s);
+    $("detail").querySelector(".approve")?.scrollIntoView({ block: "nearest" }); // keep the sign-off in view
+  }));
+}
+
+function select(service) {
+  S.selected = service;
+  renderQueue();
+  renderDetail();
+  if (S.cve) loadBlast(service, S.cve);
+}
+
+function renderDetail() {
+  const d = S.drafts.get(S.selected);
+  const el = $("detail");
+  if (!d) { el.hidden = true; return; }
+  const i = d.inputs;
+  const fix = (d.draft.match(/^(Upgrade|No fixed).*$/m) || [""])[0].replace(/`([^`]+)`/g, "<code>$1</code>");
+  const filed = S.filed[d.service];
+  el.hidden = false;
+  el.innerHTML = `<h3>${esc(d.service)}</h3>
+    <div class="act ${d.priority}"><span class="prio ${d.priority}">${d.priority}</span> ${ACT[d.priority]}</div>
+    <div class="calc"><span class="n">${i.severity}</span> × (1 + <span class="n">${i.downstream}</span>) ÷ <span class="n">${i.depth}</span> = <span class="n">${d.score.toFixed(2)}</span></div>
+    <ul class="reasons">${d.reasons.map((r) => `<li>${esc(r)}</li>`).join("")}</ul>
+    <div class="fix"><i class="ti ti-arrow-big-up-line" aria-hidden="true"></i><span>${fix}</span></div>
+    <details class="cy" style="margin-left:0"><summary><i class="ti ti-chevron-right" aria-hidden="true"></i>Full draft</summary><pre class="code">${esc(d.draft)}</pre></details>
+    <div class="approve">${filed
+      ? `<div class="filed"><i class="ti ti-circle-check" aria-hidden="true"></i><span>Approved and filed to<br><code>${esc(filed)}</code></span></div>`
+      : `<p>Nothing is filed until you approve. The server rebuilds this draft from the graph before writing it.</p>
+         <button class="btn primary" id="approve"><i class="ti ti-check" aria-hidden="true"></i><span>Approve and file</span></button>
+         <div class="err" id="approve-err" role="alert" hidden></div>`}</div>`;
+  const b = $("approve");
+  if (b) b.addEventListener("click", () => approve(d));
+}
+
+async function approve(d) {
+  const b = $("approve");
+  b.disabled = true; b.innerHTML = '<i class="ti ti-loader-2 spin" aria-hidden="true"></i><span>Filing…</span>';
+  try {
+    const r = await fetch("/api/approve", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ service: d.service, cve: d.cve }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || r.statusText);
+    S.filed[d.service] = j.file;
+    renderQueue(); renderDetail();
+  } catch (e) {
+    b.disabled = false; b.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i><span>Approve and file</span>';
+    $("approve-err").textContent = `Couldn't file it: ${e.message}. Check web.py is running, then try again.`;
+    $("approve-err").hidden = false;
+  }
+}
+
+/* ---------- blast canvas ---------- */
+function renderBlastEmpty() {
+  $("blast-head").hidden = true; $("legend").hidden = true; $("blast-hint").textContent = "";
+  $("canvas-wrap").innerHTML = "";
+  $("canvas-wrap").appendChild(blastEmpty);
+}
+const blastEmpty = $("blast-empty");
+
+async function loadBlast(service, cve) {
+  const key = service + "|" + cve;
+  if (S.blastFor === key) return;
+  S.blastFor = key;
+  try {
+    const r = await fetch(`/api/blast?service=${encodeURIComponent(service)}&cve=${encodeURIComponent(cve)}`);
+    const b = await r.json();
+    if (S.blastFor !== key) return;
+    if (!r.ok) throw new Error(b.error);
+    drawBlast(b);
+  } catch (e) {
+    $("canvas-wrap").innerHTML = `<div class="empty"><h3>Couldn't draw this blast radius</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function pkg(id) { const m = id.match(/^npm:(.+)@([^@]+)$/); return m ? [m[1], m[2]] : [id, ""]; }
+
+function drawBlast(b) {
+  const c = b.cve, sev = (c.severity_label || "").toLowerCase();
+  $("blast-head").hidden = false;
+  $("blast-head").innerHTML = `<h2>${esc(c.id)}</h2><span class="alias">${esc((c.aliases || []).join(" "))}</span>
+    <span class="sev ${sev}">${esc(c.severity_label || "")} ${c.severity}</span><span class="summary">${esc(c.summary || "")}</span>`;
+  const down = b.levels.reduce((n, l) => n + l.length, 0);
+  $("blast-hint").textContent = `${b.service} · ${down} downstream`;
+  $("legend").hidden = false;
+
+  const chain = [...b.path].reverse(); // CVE, vulnerable pkg, ..., service
+  const d = S.drafts.get(b.service);
+  // Column 1 stacks the dependency path top-down (advisory first); then the service; then callers by hop.
+  const svc = chain[chain.length - 1];
+  const cols = [{
+    label: `Dependency path · depth ${chain.length - 2}`, chain: true,
+    nodes: chain.slice(0, -1).map((id, i) => {
+      if (i === 0) return { id, cls: "cve", html: `${esc(id)}<small>${esc((c.aliases || [])[0] || "")}</small>` };
+      const [n, v] = pkg(id);
+      return i === 1 ? { id, cls: "vuln", html: `${esc(n)} ${esc(v)}<small>${b.fixed ? `fixed in ${esc(b.fixed)}` : "no fix published"}</small>` }
+                     : { id, cls: "", html: `${esc(n)} ${esc(v)}<small>pulls in ${esc(pkg(chain[i - 1])[0])}</small>` };
+    }),
+  }, {
+    label: "Exposed service",
+    nodes: [{ id: svc, cls: "svc", html: `${esc(svc)}<small>${d ? `${d.priority} · score ${d.score.toFixed(2)}` : "selected"}</small>` }],
+  }];
+  b.levels.forEach((lvl, i) => cols.push({
+    label: i === 0 ? "Calls it" : `${i + 1} hops out`,
+    nodes: lvl.map((s) => ({ id: s, cls: "", click: S.drafts.has(s), html: `${esc(s)}${b.exposed.includes(s) ? '<span class="tag">exposed</span>' : ""}` })),
+  }));
+
+  const wrap = $("canvas-wrap");
+  wrap.innerHTML = `<div class="canvas" id="canvas"><svg class="edges" id="edges" aria-hidden="true"></svg>${cols.map((col, ci) => `
+    <div class="col${col.chain ? " chain" : ""}" data-c="${ci}"><div class="col-label">${col.label}</div>${col.nodes.map((n) =>
+      `<${n.click ? "button" : "div"} class="node ${n.cls}" data-id="${esc(n.id)}"${n.click ? ` title="Select ${esc(n.id)}"` : ""}>${n.html}</${n.click ? "button" : "div"}>`).join("")}</div>`).join("")}
+    ${b.levels.length ? "" : `<div class="local"><b>No services call ${esc(b.service)}.</b> The blast stays local, which is why it can wait.</div>`}</div>`;
+  wrap.querySelectorAll("button.node").forEach((n) => n.addEventListener("click", () => { S.picked = true; select(n.dataset.id); }));
+
+  const links = [];
+  for (let i = 0; i + 1 < chain.length; i++) links.push([chain[i], chain[i + 1], "p"]);
+  for (const [a, t] of b.edges) links.push([t, a, "d"]); // a calls t, so the blast flows t -> a
+  setTimeout(() => drawEdges(links)); // not rAF: it never fires while the tab is in the background
+}
+
+function fit() {
+  // Scale the whole canvas down (not below 0.6) so a 2-hop blast fits the panel; past that, it scrolls.
+  const cv = $("canvas"), wrap = $("canvas-wrap");
+  if (!cv) return;
+  cv.style.transform = ""; cv.style.margin = ""; cv.style.minWidth = ""; cv.style.minHeight = "";
+  const s = Math.max(0.6, Math.min(1, wrap.clientWidth / cv.scrollWidth, wrap.clientHeight / cv.scrollHeight));
+  if (s < 1) {
+    cv.style.minWidth = wrap.clientWidth / s + "px"; cv.style.minHeight = wrap.clientHeight / s + "px";
+    cv.style.transform = `scale(${s})`; cv.style.transformOrigin = "0 0";
+    cv.style.marginRight = -(1 - s) * cv.offsetWidth + "px"; cv.style.marginBottom = -(1 - s) * cv.offsetHeight + "px";
+  }
+}
+
+function drawEdges(links) {
+  const cv = $("canvas"), svg = $("edges");
+  if (!cv) return;
+  fit();
+  svg.setAttribute("width", cv.offsetWidth); svg.setAttribute("height", cv.offsetHeight);
+  const at = (id) => cv.querySelector(`.node[data-id="${CSS.escape(id)}"]`);
+  const colOf = (el) => +el.parentElement.dataset.c;
+  // layout offsets, not client rects: they ignore the fit() transform, which the SVG inherits anyway
+  const box = (el) => { const c = el.parentElement; return { l: c.offsetLeft + el.offsetLeft, t: c.offsetTop + el.offsetTop, w: el.offsetWidth, h: el.offsetHeight }; };
+  svg.innerHTML = links.map(([from, to, k]) => {
+    const a = at(from), b = at(to);
+    if (!a || !b) return "";
+    const ra = box(a), rb = box(b);
+    const y1 = ra.t + ra.h / 2, y2 = rb.t + rb.h / 2;
+    let x1 = ra.l + ra.w, x2 = rb.l, d;
+    if (colOf(b) === colOf(a) && k === "p") { const x = ra.l + 22; d = `M${x} ${ra.t + ra.h} L${x} ${rb.t}`; } // stacked path link
+    else if (colOf(b) > colOf(a)) { const m = (x1 + x2) / 2; d = `M${x1} ${y1} C${m} ${y1} ${m} ${y2} ${x2} ${y2}`; }
+    else { x2 = rb.l + rb.w; d = `M${x1} ${y1} C${x1 + 40} ${y1} ${x2 + 40} ${y2} ${x2} ${y2}`; }
+    const delay = k === "p" ? colOf(a) * 90 : 300 + colOf(a) * 120;
+    return `<path class="${k}" d="${d}" pathLength="1" style="animation-delay:${delay}ms"/>`;
+  }).join("");
+}
+let rz; addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if ($("canvas")) { S.blastFor = null; if (S.selected && S.cve) loadBlast(S.selected, S.cve); } }, 150); });
+
+/* ---------- answer ---------- */
+function showAnswer(a) {
+  $("answer").hidden = false;
+  if (!a.replay) setMode("live", `Live · ${a.model}`); // the model that actually answered, after any fallback
+  $("answer-model").textContent = `${a.replay ? "replay · " : ""}${a.model}`;
+  $("answer-body").innerHTML = md(a.answer || "(no answer text)");
+  $("answer").scrollIntoView({ block: "start", behavior: "smooth" });
+  if (!S.cve) {
+    $("canvas-wrap").innerHTML = `<div class="empty"><h3>No CVE traced in this answer</h3><p>The blast canvas draws when the agent follows a CVE through the graph. Ask about one, for example CVE-2022-24999.</p></div>`;
+  }
+}
+
+function md(src) {
+  const out = []; let list = null, code = null;
+  const inline = (s) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  const close = () => { if (list) { out.push(`</${list}>`); list = null; } };
+  for (const raw of src.split("\n")) {
+    if (raw.trim().startsWith("```")) { if (code) { out.push(`<pre class="code">${esc(code.join("\n"))}</pre>`); code = null; } else { close(); code = []; } continue; }
+    if (code) { code.push(raw); continue; }
+    const h = raw.match(/^(#{1,3})\s+(.*)/), li = raw.match(/^(\s*)([*-]|\d+\.)\s+(.*)/);
+    if (h) { close(); out.push(`<h3>${inline(h[2])}</h3>`); }
+    else if (li) { const t = /\d/.test(li[2]) ? "ol" : "ul"; if (list !== t && li[1].length < 2) { close(); out.push(`<${t}>`); list = t; } if (!list) { out.push("<ul>"); list = "ul"; } out.push(`<li class="${li[1].length >= 2 ? "l2" : ""}">${inline(li[3])}</li>`); }
+    else if (raw.trim() === "" || /^-{3,}$/.test(raw.trim())) close();
+    else { close(); out.push(`<p>${inline(raw)}</p>`); }
+  }
+  close();
+  return out.join("");
+}
+</script>
+</body>
+</html>

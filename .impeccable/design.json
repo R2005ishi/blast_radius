@@ -1,0 +1,523 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-15T19:02:54+00:00",
+  "title": "Design System: BlastRadius",
+  "extensions": {
+    "colorMeta": {
+      "ground": {
+        "role": "neutral",
+        "displayName": "Graphite Ground",
+        "canonical": "#0d1117",
+        "tonalRamp": [
+          "#080b11",
+          "#21252c",
+          "#3d424a",
+          "#5c6269",
+          "#7d838b",
+          "#a0a5ae",
+          "#c4cad2",
+          "#e9eff8"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel Slate",
+        "canonical": "#151a22",
+        "tonalRamp": [
+          "#070b13",
+          "#20252e",
+          "#3d424c",
+          "#5b626b",
+          "#7c838d",
+          "#9fa5b0",
+          "#c3cad5",
+          "#e8effb"
+        ]
+      },
+      "elevated": {
+        "role": "neutral",
+        "displayName": "Elevated",
+        "canonical": "#1b212b",
+        "tonalRamp": [
+          "#060b14",
+          "#1f252f",
+          "#3c424d",
+          "#5a626e",
+          "#7b838f",
+          "#9ea6b3",
+          "#c1cad7",
+          "#e7effd"
+        ]
+      },
+      "raised": {
+        "role": "neutral",
+        "displayName": "Raised",
+        "canonical": "#222935",
+        "tonalRamp": [
+          "#060b15",
+          "#1e2531",
+          "#3b424f",
+          "#59626f",
+          "#7a8391",
+          "#9da6b5",
+          "#c0cada",
+          "#e5efff"
+        ]
+      },
+      "seam": {
+        "role": "neutral",
+        "displayName": "Seam",
+        "canonical": "#262c36",
+        "tonalRamp": [
+          "#070b14",
+          "#1f252f",
+          "#3c424d",
+          "#5b626d",
+          "#7b838f",
+          "#9ea5b2",
+          "#c2cad7",
+          "#e7effd"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Line",
+        "canonical": "#30363d",
+        "tonalRamp": [
+          "#070c11",
+          "#20262c",
+          "#3c434a",
+          "#5b626a",
+          "#7c838b",
+          "#9fa6ae",
+          "#c2cad3",
+          "#e8eff9"
+        ]
+      },
+      "line-hover": {
+        "role": "neutral",
+        "displayName": "Line Hover",
+        "canonical": "#3d444d",
+        "tonalRamp": [
+          "#060c13",
+          "#1f262e",
+          "#3c434c",
+          "#5a626c",
+          "#7b838d",
+          "#9ea6b0",
+          "#c1cad5",
+          "#e7effb"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Text",
+        "canonical": "#e6edf3",
+        "tonalRamp": [
+          "#070c10",
+          "#21262a",
+          "#3d4348",
+          "#5c6267",
+          "#7d8389",
+          "#9fa6ac",
+          "#c3cad0",
+          "#e8eff5"
+        ]
+      },
+      "text-soft": {
+        "role": "neutral",
+        "displayName": "Text Soft",
+        "canonical": "#c9d1d9",
+        "tonalRamp": [
+          "#070c11",
+          "#20262c",
+          "#3c4349",
+          "#5b6269",
+          "#7c838b",
+          "#9ea6ae",
+          "#c2cad2",
+          "#e7f0f8"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#8b949e",
+        "tonalRamp": [
+          "#060c13",
+          "#1f262e",
+          "#3b434c",
+          "#5a626b",
+          "#7b838d",
+          "#9da6b0",
+          "#c1cad5",
+          "#e6f0fb"
+        ]
+      },
+      "dim": {
+        "role": "neutral",
+        "displayName": "Dim (indicators only)",
+        "canonical": "#6e7681",
+        "tonalRamp": [
+          "#060b13",
+          "#1f262f",
+          "#3b434d",
+          "#5a626d",
+          "#7b838e",
+          "#9da6b2",
+          "#c1cad6",
+          "#e6effc"
+        ]
+      },
+      "keyword": {
+        "role": "primary",
+        "displayName": "Keyword Blue",
+        "canonical": "#79c0ff",
+        "tonalRamp": [
+          "#000338",
+          "#002459",
+          "#00447b",
+          "#1a659e",
+          "#4188c3",
+          "#65abe9",
+          "#89d0ff",
+          "#aef6ff"
+        ]
+      },
+      "string": {
+        "role": "secondary",
+        "displayName": "String Green",
+        "canonical": "#56d364",
+        "tonalRamp": [
+          "#001700",
+          "#003600",
+          "#005700",
+          "#007901",
+          "#189d34",
+          "#4ac158",
+          "#72e77d",
+          "#99ffa1"
+        ]
+      },
+      "number": {
+        "role": "secondary",
+        "displayName": "Number Purple",
+        "canonical": "#d2a8ff",
+        "tonalRamp": [
+          "#190034",
+          "#350554",
+          "#532a76",
+          "#734b9a",
+          "#956cbe",
+          "#b98fe4",
+          "#ddb3ff",
+          "#ffd8ff"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Signal Amber",
+        "canonical": "#e3b341",
+        "tonalRamp": [
+          "#230000",
+          "#421800",
+          "#623700",
+          "#845800",
+          "#a87a00",
+          "#cc9d23",
+          "#f2c252",
+          "#ffe77a"
+        ]
+      },
+      "warning-border": {
+        "role": "tertiary",
+        "displayName": "Signal Amber Border",
+        "canonical": "#5a4a1d",
+        "tonalRamp": [
+          "#160800",
+          "#322300",
+          "#504012",
+          "#706033",
+          "#928154",
+          "#b5a475",
+          "#dac898",
+          "#ffedbc"
+        ]
+      },
+      "warning-wash": {
+        "role": "tertiary",
+        "displayName": "Signal Amber Wash",
+        "canonical": "#261f0d",
+        "tonalRamp": [
+          "#110a00",
+          "#2b2412",
+          "#49412e",
+          "#69614d",
+          "#8a826d",
+          "#ada48f",
+          "#d2c9b2",
+          "#f7eed7"
+        ]
+      },
+      "destructive": {
+        "role": "tertiary",
+        "displayName": "Breach Red",
+        "canonical": "#ff6b61",
+        "tonalRamp": [
+          "#3b0000",
+          "#620000",
+          "#890000",
+          "#b12021",
+          "#d94a44",
+          "#ff7066",
+          "#ff9588",
+          "#ffbbad"
+        ]
+      },
+      "destructive-border": {
+        "role": "tertiary",
+        "displayName": "Breach Red Border",
+        "canonical": "#6e2a26",
+        "tonalRamp": [
+          "#280000",
+          "#4a0608",
+          "#6d2925",
+          "#914943",
+          "#b66a63",
+          "#dc8d85",
+          "#ffb1a8",
+          "#ffd6cc"
+        ]
+      },
+      "destructive-wash": {
+        "role": "tertiary",
+        "displayName": "Breach Red Wash",
+        "canonical": "#2a1414",
+        "tonalRamp": [
+          "#180505",
+          "#351e1e",
+          "#543a3a",
+          "#755959",
+          "#977a79",
+          "#bb9d9b",
+          "#e0c0bf",
+          "#ffe5e4"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "Commit Blue",
+        "canonical": "#1f6feb",
+        "tonalRamp": [
+          "#070055",
+          "#000979",
+          "#00369f",
+          "#145ac5",
+          "#3a7eec",
+          "#5da2ff",
+          "#80c8ff",
+          "#a4eeff"
+        ]
+      },
+      "primary-hover": {
+        "role": "primary",
+        "displayName": "Commit Blue Hover",
+        "canonical": "#388bfd",
+        "tonalRamp": [
+          "#050055",
+          "#000d79",
+          "#00379e",
+          "#005bc4",
+          "#307feb",
+          "#55a4ff",
+          "#79caff",
+          "#9ef0ff"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Story Heading",
+        "purpose": "Only the CVE id in the blast header and the selected service in the detail."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Brand wordmark and empty-state headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Steps, answers, reasons, buttons."
+      },
+      "body-mono": {
+        "displayName": "Body Mono",
+        "purpose": "Ids, args, metadata figures, inline code, graph nodes."
+      },
+      "label": {
+        "displayName": "Panel Label",
+        "purpose": "Uppercase panel headers and canvas column labels."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Cypher and draft blocks."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "edge-draw",
+        "value": "stroke-dashoffset 1 to 0, 550ms cubic-bezier(.2,.8,.2,1); path staggered 90ms per column, callers 300ms + 120ms per column",
+        "purpose": "The single authored motion: blast edges draw in once. Static under prefers-reduced-motion."
+      },
+      {
+        "name": "step-enter",
+        "value": "opacity 0, translateY(4px) to rest, 250ms cubic-bezier(.2,.8,.2,1)",
+        "purpose": "Each streamed agent step settles in."
+      },
+      {
+        "name": "state-transition",
+        "value": "150ms on background-color, border-color, transform",
+        "purpose": "Hover, focus and disclosure chevron."
+      },
+      {
+        "name": "progress",
+        "value": "spin 0.9s linear; shimmer 1.4s linear",
+        "purpose": "Running indicators only."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "two-column",
+        "value": "1180px"
+      },
+      {
+        "name": "single-column",
+        "value": "820px"
+      }
+    ],
+    "provenance": {
+      "seedKey": "5345550a",
+      "world": "digital-design-canon-dark-first-developer-console",
+      "note": "User-chosen alternate (challenger 2 of the hand), not the assigned roll."
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one committing action per region: Run triage, Approve and file.",
+      "html": "<button class=\"ds-btn ds-btn-primary\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 4v16l13-8z\"/></svg><span>Run triage</span></button>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--r);border:1px solid var(--line);background:transparent;color:var(--text);font:500 15px var(--sans);cursor:pointer;transition:background-color .15s,border-color .15s} .ds-btn:hover{background:var(--elevated);border-color:#3d444d} .ds-btn:focus-visible{outline:2px solid var(--keyword);outline-offset:2px} .ds-btn:disabled{opacity:.5;cursor:not-allowed} .ds-btn-primary{background:var(--primary);border-color:var(--primary);color:#fff} .ds-btn-primary:hover{background:var(--primary-hover);border-color:var(--primary-hover)}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined neutral action; fills with elevated on hover.",
+      "html": "<button class=\"ds-btn\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12l5 5L20 7\"/></svg><span>Approve and file</span></button>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:var(--r);border:1px solid var(--line);background:transparent;color:var(--text);font:500 15px var(--sans);cursor:pointer;transition:background-color .15s,border-color .15s} .ds-btn:hover{background:var(--elevated);border-color:#3d444d} .ds-btn:focus-visible{outline:2px solid var(--keyword);outline-offset:2px} .ds-btn:disabled{opacity:.5;cursor:not-allowed}"
+    },
+    {
+      "name": "Question Input",
+      "kind": "input",
+      "refersTo": "input-question",
+      "description": "Inset ground well; border turns keyword blue on focus.",
+      "html": "<textarea class=\"ds-input\" rows=\"3\">Which services are exposed to CVE-2022-24999?</textarea>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-input{width:320px;min-height:92px;resize:vertical;background:var(--ground);color:var(--text);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;font:400 15px/1.5 var(--sans);transition:border-color .15s} .ds-input:hover{border-color:#3d444d} .ds-input:focus{outline:none;border-color:var(--keyword)}"
+    },
+    {
+      "name": "Mode Pill",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Top-strip live/replay state; replay turns amber.",
+      "html": "<div class=\"ds-mode\"><span class=\"ds-dot\"></span>Live · gemini</div> <div class=\"ds-mode ds-replay\"><span class=\"ds-dot\"></span>Replay · gemini</div>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-mode{display:inline-flex;align-items:center;gap:8px;font:400 13px var(--sans);padding:5px 12px;border:1px solid var(--line);border-radius:999px;color:var(--muted);background:var(--panel)} .ds-dot{width:8px;height:8px;border-radius:50%;background:var(--string)} .ds-replay{border-color:#5a4a1d;color:var(--warning)} .ds-replay .ds-dot{background:var(--warning)}"
+    },
+    {
+      "name": "Priority Badges",
+      "kind": "chip",
+      "refersTo": "priority-p0",
+      "description": "P0 solid red, P1 amber wash, P2 muted outline; the label is always present.",
+      "html": "<span class=\"ds-prio ds-p0\">P0</span> <span class=\"ds-prio ds-p1\">P1</span> <span class=\"ds-prio ds-p2\">P2</span>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-prio{display:inline-block;font:600 12px var(--mono);padding:3px 7px;border-radius:4px;border:1px solid;min-width:32px;text-align:center} .ds-p0{color:#e6edf3;background:#b62324;border-color:#b62324} .ds-p1{color:var(--warning);background:#261f0d;border-color:#5a4a1d} .ds-p2{color:var(--muted);border-color:var(--line)}"
+    },
+    {
+      "name": "Triage Queue Row",
+      "kind": "custom",
+      "refersTo": "queue-row-selected",
+      "description": "Badge, mono service, muted meta, purple score; the selected row gets a keyword-blue border.",
+      "html": "<button class=\"ds-qrow\" aria-pressed=\"true\"><span class=\"ds-prio ds-p0\">P0</span><span class=\"ds-name\">auth-service</span><span class=\"ds-meta\">14 downstream</span><span class=\"ds-score\">56.25</span></button>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-prio{display:inline-block;font:600 12px var(--mono);padding:3px 7px;border-radius:4px;border:1px solid;min-width:32px;text-align:center} .ds-p0{color:#e6edf3;background:#b62324;border-color:#b62324} .ds-p1{color:var(--warning);background:#261f0d;border-color:#5a4a1d} .ds-p2{color:var(--muted);border-color:var(--line)} .ds-qrow{width:380px;display:grid;grid-template-columns:auto minmax(0,1fr) auto 52px;gap:12px;align-items:center;text-align:left;background:transparent;color:var(--text);border:1px solid transparent;border-radius:var(--r);padding:7px 10px;cursor:pointer;transition:background-color .15s,border-color .15s} .ds-qrow:hover{background:var(--elevated)} .ds-qrow[aria-pressed=true]{background:var(--elevated);border-color:var(--keyword)} .ds-qrow:focus-visible{outline:2px solid var(--keyword);outline-offset:2px} .ds-name{font:500 15px var(--mono)} .ds-meta{font:13px var(--sans);color:var(--muted)} .ds-score{font:500 15px var(--mono);color:var(--number);text-align:right;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Agent Step",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Numbered tool call: mono keyword tool name, args with green values, summary, Cypher disclosure.",
+      "html": "<div class=\"ds-step\"><div class=\"ds-head\"><span class=\"ds-n\">1</span><span class=\"ds-tool\">find_exposed_services</span></div><div class=\"ds-args\">cve_id=<span class=\"ds-v\">\"CVE-2022-24999\"</span></div><div class=\"ds-sum\">20 services exposed</div><details class=\"ds-cy\" open><summary><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 6l6 6-6 6\"/></svg>Cypher · 1 query</summary><pre class=\"ds-code\"><span class=\"ds-k\">MATCH</span> (c:CVE {id: <span class=\"ds-v\">'CVE-2022-24999'</span>}) <span class=\"ds-k\">RETURN</span> c <span class=\"ds-k\">LIMIT</span> <span class=\"ds-num\">1</span></pre></details></div>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-step{width:360px;padding:12px 18px;background:var(--panel);border-bottom:1px solid var(--seam);color:var(--text);font:400 15px/1.55 var(--sans)} .ds-head{display:flex;gap:10px;align-items:baseline} .ds-n{font:12px var(--mono);color:var(--muted);min-width:18px} .ds-tool{font:500 15px var(--mono);color:var(--keyword)} .ds-args{font:13px var(--mono);color:var(--muted);margin:4px 0 0 28px} .ds-v{color:var(--string)} .ds-sum{margin:6px 0 0 28px} .ds-cy{margin:8px 0 0 28px} .ds-cy summary{cursor:pointer;font-size:13px;color:var(--muted);list-style:none;display:inline-flex;gap:6px;align-items:center} .ds-cy summary:hover{color:var(--text)} .ds-cy summary svg{transition:transform .15s} .ds-cy[open] summary svg{transform:rotate(90deg)} .ds-code{margin:8px 0 0;padding:10px 12px;background:var(--ground);border:1px solid var(--seam);border-radius:var(--r);font:12px/1.6 var(--mono);white-space:pre-wrap;color:#c9d1d9} .ds-k{color:var(--keyword)} .ds-num{color:var(--number)}"
+    },
+    {
+      "name": "Blast Graph Nodes",
+      "kind": "custom",
+      "refersTo": "graph-node",
+      "description": "Mono nodes on the 18px dot-grid canvas: red CVE, red-bordered vulnerable package, blue exposed service, caller with exposed tag.",
+      "html": "<div class=\"ds-canvas\"><div class=\"ds-node ds-cve\">CVE-2022-24999<small>GHSA-hrpp-h998-j3pp</small></div><div class=\"ds-node ds-vuln\">qs 6.5.2<small>fixed in 6.7.3</small></div><div class=\"ds-node ds-svc\">auth-service<small>P0 · score 56.25</small></div><button class=\"ds-node\">api-gateway<span class=\"ds-tag\">exposed</span></button></div>",
+      "css": ":host{--ground:#0d1117;--panel:#151a22;--elevated:#1b212b;--raised:#222935;--seam:#262c36;--line:#30363d;--muted:#8b949e;--text:#e6edf3;--dim:#6e7681;--keyword:#79c0ff;--string:#56d364;--number:#d2a8ff;--warning:#e3b341;--destructive:#ff6b61;--primary:#1f6feb;--primary-hover:#388bfd;--sans:'Lexend',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace;--r:6px} .ds-canvas{display:flex;gap:16px;align-items:center;padding:24px;background:var(--ground) radial-gradient(circle,var(--seam) 1px,transparent 1.2px) 0 0/18px 18px} .ds-node{display:block;text-align:left;min-width:120px;padding:7px 11px;border-radius:var(--r);background:var(--elevated);border:1px solid var(--line);font:13px/1.35 var(--mono);color:var(--text);white-space:nowrap} .ds-node small{display:block;color:var(--muted);font-size:12px} .ds-cve{border-color:#6e2a26;background:#2a1414} .ds-cve small{color:#ff6b61} .ds-vuln{border-color:#6e2a26} .ds-svc{border-color:var(--keyword);background:#1b212b;padding:10px 14px;font-size:15px;font-weight:500} button.ds-node{cursor:pointer;transition:border-color .15s} button.ds-node:hover{border-color:var(--keyword)} button.ds-node:focus-visible{outline:2px solid var(--keyword);outline-offset:2px} .ds-tag{margin-left:8px;font-size:12px;color:var(--warning);border:1px solid #5a4a1d;border-radius:3px;padding:0 4px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Graphite Console",
+    "overview": "The agent's reasoning is the interface. One graphite console holds the question, the streamed tool steps with the Cypher they ran, the ranked triage queue, the drawn blast path, and the human sign-off. It reads like a code editor and a terminal sharing a desk: dark ground, flat panels split by hairline seams, and colour that appears only when something has a state worth naming.\n\nIt is an Operate surface, dense and calm. It is built to be read off a projector in about sixty seconds. Hierarchy comes from mono versus sans, from position in a fixed three-column layout, and from state colour. Size does very little of the work. The confirmed anti-reference is the neon force-graph SOC wallboard: no glow, no free-floating physics graph, no colour used for atmosphere.",
+    "keyCharacteristics": [
+      "Graphite ground with flat panels; depth comes from tone and 1px seams, never from shadow.",
+      "Syntax-highlighting accents carry state only, with one meaning each.",
+      "Lexend for UI prose, JetBrains Mono for ids, Cypher, scores and figures.",
+      "A tight 12/13/15 chrome scale. Larger sizes are kept for the brand, empty-state headings and the two story headings.",
+      "One authored motion: blast edges draw in once."
+    ],
+    "rules": [
+      {
+        "name": "The State-Only Accent Rule",
+        "body": "Each accent has exactly one meaning: blue means selected or primary, purple a score, green filed, amber P1 or replay, red P0 or the vulnerable path. If a colour cannot name the state it marks, leave the element neutral.",
+        "section": "colors"
+      },
+      {
+        "name": "The Never-Colour-Alone Rule",
+        "body": "Every state colour comes with text: P0/P1/P2 labels, \"exposed\", \"Replay ·\", \"Approved and filed\", and a legend for the edge colours. On a projector the text is what reads.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tight Scale Rule",
+        "body": "Chrome stays on 12/13/15. Only the brand and empty states go to 18, and only the two story headings go to 23. The detector's flat-type-hierarchy warning is an accepted exception for this Operate surface. Do not add sizes between steps or above 23.",
+        "section": "typography"
+      },
+      {
+        "name": "The Machine-Text-Is-Mono Rule",
+        "body": "Ids, package@versions, Cypher, scores, counts, keyboard hints and file paths are set in JetBrains Mono. Prose explaining them is set in Lexend.",
+        "section": "typography"
+      },
+      {
+        "name": "The Seam-Not-Shadow Rule",
+        "body": "Separate surfaces with a 1px seam or a tonal step, never with a box-shadow or glow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep every accent tied to its one state: blue selected/primary, purple score, green filed, amber P1/replay, red P0/vulnerable path.",
+      "**Do** pair every state colour with a text label or legend entry.",
+      "**Do** set ids, Cypher, scores and paths in JetBrains Mono with tabular numerals.",
+      "**Do** stay on the 12/13/15 chrome scale. Use 18 for the brand and empty states, and 23 only for a story heading.",
+      "**Do** separate surfaces with 1px seams and tonal steps.",
+      "**Do** keep the edge draw-in as the single authored motion and respect prefers-reduced-motion.",
+      "**Do** label replays as replays (amber pill and banner) wherever live data could be assumed."
+    ],
+    "donts": [
+      "**Don't** add box-shadows, glows, or gradients for atmosphere. The only gradient is the shimmer progress bar.",
+      "**Don't** build a neon force-graph SOC wallboard. The blast reads left to right in columns, not as floating physics.",
+      "**Don't** use an accent decoratively or give one accent a second meaning.",
+      "**Don't** use dim (#6e7681) for readable text. It is for inactive indicators only.",
+      "**Don't** introduce type sizes between the scale steps or a display tier above 23px."
+    ]
+  }
+}
