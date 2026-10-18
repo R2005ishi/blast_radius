@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: blast-radius
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false   # Set this manually in Render dashboard
+      - key: BLASTRADIUS_PORT
+        value: "6379"
+    healthCheckPath: /api/status
+    autoDeploy: true

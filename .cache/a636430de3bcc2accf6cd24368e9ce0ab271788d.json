@@ -1,0 +1,1 @@
+{"nodes": [{"versionKey": {"system": "NPM", "name": "axios", "version": "0.21.1"}, "bundled": false, "relation": "SELF", "errors": []}, {"versionKey": {"system": "NPM", "name": "follow-redirects", "version": "1.16.1"}, "bundled": false, "relation": "DIRECT", "errors": []}], "edges": [{"fromNode": 0, "toNode": 1, "requirement": "^1.10.0"}], "error": ""}

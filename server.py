@@ -7,7 +7,7 @@ import sys
 import falkordb
 from mcp.server.mcpserver import MCPServer  # mcp 2.x name for FastMCP
 
-G = falkordb.FalkorDB(host="localhost", port=6379).select_graph(os.environ.get("BLASTRADIUS_GRAPH", "blastradius"))
+G = falkordb.FalkorDB(host=os.environ.get("BLASTRADIUS_HOST", "localhost"), port=int(os.environ.get("BLASTRADIUS_PORT", "6379"))).select_graph(os.environ.get("BLASTRADIUS_GRAPH", "blastradius"))
 mcp = MCPServer("blastradius")
 ACTIONS = {"P0": "patch now", "P1": "patch this sprint", "P2": "patch next sprint"}
 
@@ -197,7 +197,7 @@ CREATE (hub:Service {name:'hub', team:'t', tier:1}), (leaf:Service {name:'leaf',
 
 def selftest():
     global G
-    G = falkordb.FalkorDB(host="localhost", port=6379).select_graph("blastradius_selftest")
+    G = falkordb.FalkorDB(host=os.environ.get("BLASTRADIUS_HOST", "localhost"), port=int(os.environ.get("BLASTRADIUS_PORT", "6379"))).select_graph("blastradius_selftest")
     try:
         G.delete()
     except Exception:

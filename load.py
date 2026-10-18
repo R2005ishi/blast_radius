@@ -49,7 +49,8 @@ SEVERITY = {"LOW": 3.0, "MODERATE": 5.5, "HIGH": 7.5, "CRITICAL": 9.5}
 
 
 def http(url, body=None):
-    """GET (or POST json body), cached forever in .cache/ by url+body hash."""
+    """GET (or POST json body), cached forever in .cache/ by url+body hash.
+    Returns None if not cached and network is unavailable."""
     os.makedirs(CACHE, exist_ok=True)
     data = json.dumps(body).encode() if body is not None else None
     path = os.path.join(CACHE, hashlib.sha1(url.encode() + (data or b"")).hexdigest() + ".json")
@@ -57,11 +58,15 @@ def http(url, body=None):
         with open(path, encoding="utf-8") as f:
             return json.load(f)
     req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=60) as r:
-        out = json.load(r)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(out, f)
-    return out
+    try:
+        with urllib.request.urlopen(req, timeout=15) as r:
+            out = json.load(r)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(out, f)
+        return out
+    except Exception as e:
+        print(f"  [warn] skipping {url}: {e}")
+        return None
 
 
 def pid(name, version):
@@ -100,6 +105,9 @@ def main():
     for root in ROOTS:
         name, version = split(root)
         g = http(f"https://api.deps.dev/v3/systems/npm/packages/{q(name, safe='')}/versions/{q(version, safe='')}:dependencies")
+        if g is None:
+            print(f"  [warn] skipping deps for {root} (not cached, network unavailable)")
+            continue
         ids = [pid(n["versionKey"]["name"], n["versionKey"]["version"]) for n in g["nodes"]]
         for n, i in zip(g["nodes"], ids):
             pkgs[i] = (n["versionKey"]["name"], n["versionKey"]["version"])
@@ -113,6 +121,9 @@ def main():
         chunk = order[i:i + 1000]
         res = http("https://api.osv.dev/v1/querybatch", {"queries": [
             {"package": {"name": pkgs[p][0], "ecosystem": "npm"}, "version": pkgs[p][1]} for p in chunk]})
+        if res is None:
+            print("  [warn] skipping OSV querybatch (not cached, network unavailable)")
+            continue
         # ponytail: ignores next_page_token; fine unless one version has >1000 vulns
         for p, r in zip(chunk, res["results"]):
             affected += [(p, v["id"]) for v in r.get("vulns", [])]
@@ -120,13 +131,16 @@ def main():
     cves, edges = {}, []
     for p, vid in affected:
         v = http(f"https://api.osv.dev/v1/vulns/{q(vid, safe='')}")
+        if v is None:
+            print(f"  [warn] skipping vuln details for {vid} (not cached, network unavailable)")
+            continue
         label = (v.get("database_specific") or {}).get("severity") or "UNKNOWN"
         cves[vid] = {"id": vid, "aliases": v.get("aliases", []), "summary": v.get("summary", ""),
                      "severity": SEVERITY.get(label, 0.0), "severity_label": label}
         edges.append({"pkg": p, "cve": vid, "fixed": fixed_for(v, *pkgs[p])})
 
     # 4-5. write graph
-    g = FalkorDB(host="localhost", port=6379).select_graph(GRAPH)
+    g = FalkorDB(host=os.environ.get("BLASTRADIUS_HOST", "localhost"), port=int(os.environ.get("BLASTRADIUS_PORT", "6379"))).select_graph(GRAPH)
     try:
         g.delete()
     except Exception:

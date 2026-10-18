@@ -6,6 +6,7 @@ Approval is a human click on the page; the server recomputes the draft from the 
 """
 import asyncio
 import json
+import os
 import re
 import sys
 import time
@@ -20,7 +21,7 @@ import server
 HERE = Path(__file__).resolve().parent
 PAGE = HERE / "web" / "index.html"
 REPLAYS = HERE / "replays.json"  # committed, so a fresh clone can still demo with no key
-PORT = 8000
+PORT = int(os.environ.get("PORT", 8000))
 SAFE = re.compile(r"^[\w.@:/ -]{1,120}$")  # service / CVE ids from the browser
 
 
@@ -185,6 +186,6 @@ if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     print(f"BlastRadius demo on http://localhost:{PORT}")
     try:
-        ThreadingHTTPServer(("127.0.0.1", PORT), Handler).serve_forever()
+        ThreadingHTTPServer(("0.0.0.0", PORT), Handler).serve_forever()
     except KeyboardInterrupt:
         print("Stopped.")

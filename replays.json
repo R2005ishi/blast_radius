@@ -1,8 +1,8 @@
 {
  "which services are exposed to cve-2022-24999 and what should we do first?": {
   "question": "Which services are exposed to CVE-2022-24999 and what should we do first?",
-  "model": "gemini-3.5-flash-lite",
-  "recorded_at": "2026-10-16 00:40",
+  "model": "gemini-3.8-flash",
+  "recorded_at": "2026-10-18 17:22",
   "steps": [
    {
     "name": "find_exposed_services",
@@ -63,334 +63,6 @@
      "cypher": [
       "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
       "MATCH (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"})<-[:AFFECTED_BY]-(v:PackageVersion) MATCH p = (s:Service)-[:DEPENDS_ON*1..]->(v) RETURN s.name, v.id, min(length(p)) AS depth ORDER BY depth, s.name"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "cve_id": "CVE-2022-24999",
-     "service": "account-service"
-    },
-    "result": {
-     "path": [
-      "account-service",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"account-service\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "service": "admin-portal",
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "path": [
-      "admin-portal",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"admin-portal\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "service": "api-gateway",
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "path": [
-      "api-gateway",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"api-gateway\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "service": "auth-service",
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "path": [
-      "auth-service",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"auth-service\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "service": "cart-service",
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "path": [
-      "cart-service",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"cart-service\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "service": "mobile-bff",
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "path": [
-      "mobile-bff",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"mobile-bff\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "cve_id": "CVE-2022-24999",
-     "service": "partner-api"
-    },
-    "result": {
-     "path": [
-      "partner-api",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"partner-api\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "show_path",
-    "args": {
-     "service": "pdf-export",
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "path": [
-      "pdf-export",
-      "npm:express@4.17.1",
-      "npm:qs@6.7.0",
-      "GHSA-hrpp-h998-j3pp"
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (s:Service {name: \"pdf-export\"}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed"
-     ]
-    }
-   },
-   {
-    "name": "best_single_fix",
-    "args": {
-     "cve_id": "CVE-2022-24999"
-    },
-    "result": {
-     "fixes": [
-      {
-       "package_version": "npm:qs@6.7.0",
-       "fixed": "6.7.3",
-       "cves_cleared": 4,
-       "services_cleared": 8
-      }
-     ],
-     "cypher": [
-      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
-      "MATCH (v:PackageVersion)-[:AFFECTED_BY]->(:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) MATCH (v:PackageVersion)-[a:AFFECTED_BY]->(c:CVE) WITH v, collect(DISTINCT [c.id, a.fixed]) AS cf OPTIONAL MATCH (s:Service)-[:DEPENDS_ON*1..]->(v) RETURN v.id, cf, count(DISTINCT s) AS n ORDER BY n DESC, size(cf) DESC, v.id LIMIT 5"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "account-service"
-    },
-    "result": {
-     "downstream_count": 1,
-     "downstream": [
-      "support-portal"
-     ],
-     "pagerank": 0.00810378510504961,
-     "pagerank_rank": 4,
-     "cypher": [
-      "MATCH (s:Service {name: \"account-service\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "admin-portal"
-    },
-    "result": {
-     "downstream_count": 0,
-     "downstream": [],
-     "pagerank": 0.00438044127076864,
-     "pagerank_rank": 17,
-     "cypher": [
-      "MATCH (s:Service {name: \"admin-portal\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "api-gateway"
-    },
-    "result": {
-     "downstream_count": 10,
-     "downstream": [
-      "admin-portal",
-      "cart-service",
-      "catalog-service",
-      "checkout-service",
-      "mobile-bff",
-      "order-service",
-      "partner-api",
-      "reviews-service",
-      "search-service",
-      "web-frontend"
-     ],
-     "pagerank": 0.0378905385732651,
-     "pagerank_rank": 3,
-     "cypher": [
-      "MATCH (s:Service {name: \"api-gateway\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "auth-service"
-    },
-    "result": {
-     "downstream_count": 14,
-     "downstream": [
-      "account-service",
-      "admin-portal",
-      "api-gateway",
-      "cart-service",
-      "catalog-service",
-      "checkout-service",
-      "mobile-bff",
-      "order-service",
-      "partner-api",
-      "payments-service",
-      "reviews-service",
-      "search-service",
-      "support-portal",
-      "web-frontend"
-     ],
-     "pagerank": 0.0453395657241344,
-     "pagerank_rank": 1,
-     "cypher": [
-      "MATCH (s:Service {name: \"auth-service\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "cart-service"
-    },
-    "result": {
-     "downstream_count": 0,
-     "downstream": [],
-     "pagerank": 0.00438044127076864,
-     "pagerank_rank": 13,
-     "cypher": [
-      "MATCH (s:Service {name: \"cart-service\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "mobile-bff"
-    },
-    "result": {
-     "downstream_count": 0,
-     "downstream": [],
-     "pagerank": 0.00438044127076864,
-     "pagerank_rank": 18,
-     "cypher": [
-      "MATCH (s:Service {name: \"mobile-bff\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "partner-api"
-    },
-    "result": {
-     "downstream_count": 0,
-     "downstream": [],
-     "pagerank": 0.00438044127076864,
-     "pagerank_rank": 16,
-     "cypher": [
-      "MATCH (s:Service {name: \"partner-api\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
-     ]
-    }
-   },
-   {
-    "name": "service_criticality",
-    "args": {
-     "service": "pdf-export"
-    },
-    "result": {
-     "downstream_count": 0,
-     "downstream": [],
-     "pagerank": 0.00438044127076864,
-     "pagerank_rank": 20,
-     "cypher": [
-      "MATCH (s:Service {name: \"pdf-export\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)",
-      "CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC"
      ]
     }
    },
@@ -490,8 +162,8 @@
    {
     "name": "draft_remediation",
     "args": {
-     "cve_id": "CVE-2022-24999",
-     "service": "auth-service"
+     "service": "auth-service",
+     "cve_id": "CVE-2022-24999"
     },
     "result": {
      "service": "auth-service",
@@ -521,8 +193,8 @@
    {
     "name": "draft_remediation",
     "args": {
-     "cve_id": "CVE-2022-24999",
-     "service": "cart-service"
+     "service": "cart-service",
+     "cve_id": "CVE-2022-24999"
     },
     "result": {
      "service": "cart-service",
@@ -641,9 +313,29 @@
       "MATCH (s:Service {name: \"pdf-export\"}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)"
      ]
     }
+   },
+   {
+    "name": "best_single_fix",
+    "args": {
+     "cve_id": "CVE-2022-24999"
+    },
+    "result": {
+     "fixes": [
+      {
+       "package_version": "npm:qs@6.7.0",
+       "fixed": "6.7.3",
+       "cves_cleared": 4,
+       "services_cleared": 8
+      }
+     ],
+     "cypher": [
+      "MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1",
+      "MATCH (v:PackageVersion)-[:AFFECTED_BY]->(:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) MATCH (v:PackageVersion)-[a:AFFECTED_BY]->(c:CVE) WITH v, collect(DISTINCT [c.id, a.fixed]) AS cf OPTIONAL MATCH (s:Service)-[:DEPENDS_ON*1..]->(v) RETURN v.id, cf, count(DISTINCT s) AS n ORDER BY n DESC, size(cf) DESC, v.id LIMIT 5"
+     ]
+    }
    }
   ],
-  "answer": "### Findings for CVE-2022-24999 (qs Prototype Pollution)\n\nEight services depend on the vulnerable package `npm:qs@6.7.0` (transitive via `npm:express@4.17.1`). Upgrading `qs` to `6.7.3` clears all of them.\n\n1. **auth-service**\n   - **Path:** `auth-service` -> `npm:express@4.17.1` -> `npm:qs@6.7.0` -> `GHSA-hrpp-h998-j3pp`\n   - **Priority:** P0 \"patch now\" (Severity: 7.5, Downstream: 14, Depth: 2, Score: 56.25)\n   - **Reason:** Central hub with high downstream blast radius.\n\n2. **api-gateway**\n   - **Path:** `api-gateway` -> `npm:express@4.17.1` -> `npm:qs@6.7.0` -> `GHSA-hrpp-h998-j3pp`\n   - **Priority:** P0 \"patch now\" (Severity: 7.5, Downstream: 10, Depth: 2, Score: 41.25)\n   - **Reason:** High upstream gateway affecting multiple downstream services.\n\n3. **account-service**\n   - **Path:** `account-service` -> `npm:express@4.17.1` -> `npm:qs@6.7.0` -> `GHSA-hrpp-h998-j3pp`\n   - **Priority:** P2 \"patch next sprint\" (Severity: 7.5, Downstream: 1, Depth: 2, Score: 7.50)\n   - **Reason:** Moderate blast radius.\n\n4. **admin-portal**, **cart-service**, **mobile-bff**, **partner-api**, **pdf-export**\n   - **Path:** `<service>` -> `npm:express@4.17.1` -> `npm:qs@6.7.0` -> `GHSA-hrpp-h998-j3pp`\n   - **Priority:** P2 \"patch next sprint\" (Severity: 7.5, Downstream: 0, Depth: 2, Score: 3.75)\n   - **Reason:** Leaf services with no callers depending on them.\n\n---\n\n### Steps Taken\n\n1. **`find_exposed_services`**\n   - *Why:* To find every service exposed to CVE-2022-24999 and its depth.\n   - *Cypher:*\n     ```cypher\n     MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1\n     MATCH (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"})<-[:AFFECTED_BY]-(v:PackageVersion) MATCH p = (s:Service)-[:DEPENDS_ON*1..]->(v) RETURN s.name, v.id, min(length(p)) AS depth ORDER BY depth, s.name\n     ```\n\n2. **`show_path`**\n   - *Why:* To verify the dependency path for each exposed service.\n   - *Cypher:*\n     ```cypher\n     MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1\n     MATCH (s:Service {name: $service}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed\n     ```\n\n3. **`best_single_fix`**\n   - *Why:* To find the single upgrade that resolves the most exposure.\n   - *Cypher:*\n     ```cypher\n     MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1\n     MATCH (v:PackageVersion)-[:AFFECTED_BY]->(:CVE {id: \"GHSA-hrpp-h998-j3pp\"}) MATCH (v:PackageVersion)-[a:AFFECTED_BY]->(c:CVE) WITH v, collect(DISTINCT [c.id, a.fixed]) AS cf OPTIONAL MATCH (s:Service)-[:DEPENDS_ON*1..]->(v) RETURN v.id, cf, count(DISTINCT s) AS n ORDER BY n DESC, size(cf) DESC, v.id LIMIT 5\n     ```\n\n4. **`service_criticality`**\n   - *Why:* To compute downstream blast radius and PageRank for each exposed service.\n   - *Cypher:*\n     ```cypher\n     MATCH (s:Service {name: $service}) OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s RETURN s.name, collect(DISTINCT x.name)\n     CALL algo.pageRank('Service', 'CALLS') YIELD node, score RETURN node.name, score ORDER BY score DESC\n     ```\n\n5. **`draft_remediation`**\n   - *Why:* To calculate remediation priority scores and draft upgrade plans.\n   - *Cypher:* (combined CVE lookup, shortest path, and downstream callers query per service)"
+  "answer": "### Findings\n\n**CVE-2022-24999** (GHSA-hrpp-h998-j3pp, Severity: 7.5 High \u2014 *qs vulnerable to Prototype Pollution*) affects **8 services** via the transitive dependency path through `npm:express@4.17.1` to `npm:qs@6.7.0`. Upgrading `qs` to `6.7.3` clears the vulnerability across all 8 services (and resolves 4 CVEs total). Remediation plans have been drafted for human review.\n\n#### What to Do First\nPatch the two **P0** services immediately:\n1. **`auth-service`** (Score: 56.25) \u2014 Most critical blast radius (14 downstream services).\n2. **`api-gateway`** (Score: 41.25) \u2014 Second most critical (10 downstream services).\n\n---\n\n### Service Exposure & Triage Details\n\n1. **`auth-service`**\n   - **Path:** `auth-service` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P0** (patch now)\n   - **Numbers:** Severity = 7.5, Downstream = 14, Depth = 2, Score = **56.25** ($7.5 \\times (1 + 14) / 2$)\n   - **Reason:** High severity with extensive blast radius affecting 14 downstream calling services.\n\n2. **`api-gateway`**\n   - **Path:** `api-gateway` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P0** (patch now)\n   - **Numbers:** Severity = 7.5, Downstream = 10, Depth = 2, Score = **41.25** ($7.5 \\times (1 + 10) / 2$)\n   - **Reason:** High severity with 10 downstream calling services in its blast radius.\n\n3. **`account-service`**\n   - **Path:** `account-service` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P2** (patch next sprint)\n   - **Numbers:** Severity = 7.5, Downstream = 1, Depth = 2, Score = **7.50** ($7.5 \\times (1 + 1) / 2$)\n   - **Reason:** High severity, but limited downstream impact (1 downstream service: `support-portal`).\n\n4. **`admin-portal`**\n   - **Path:** `admin-portal` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P2** (patch next sprint)\n   - **Numbers:** Severity = 7.5, Downstream = 0, Depth = 2, Score = **3.75** ($7.5 \\times (1 + 0) / 2$)\n   - **Reason:** High severity, but no downstream callers; blast radius is isolated.\n\n5. **`cart-service`**\n   - **Path:** `cart-service` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P2** (patch next sprint)\n   - **Numbers:** Severity = 7.5, Downstream = 0, Depth = 2, Score = **3.75** ($7.5 \\times (1 + 0) / 2$)\n   - **Reason:** High severity, but no downstream callers; blast radius is isolated.\n\n6. **`mobile-bff`**\n   - **Path:** `mobile-bff` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P2** (patch next sprint)\n   - **Numbers:** Severity = 7.5, Downstream = 0, Depth = 2, Score = **3.75** ($7.5 \\times (1 + 0) / 2$)\n   - **Reason:** High severity, but no downstream callers; blast radius is isolated.\n\n7. **`partner-api`**\n   - **Path:** `partner-api` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P2** (patch next sprint)\n   - **Numbers:** Severity = 7.5, Downstream = 0, Depth = 2, Score = **3.75** ($7.5 \\times (1 + 0) / 2$)\n   - **Reason:** High severity, but no downstream callers; blast radius is isolated.\n\n8. **`pdf-export`**\n   - **Path:** `pdf-export` \u2192 `npm:express@4.17.1` \u2192 `npm:qs@6.7.0` \u2192 `GHSA-hrpp-h998-j3pp`\n   - **Priority:** **P2** (patch next sprint)\n   - **Numbers:** Severity = 7.5, Downstream = 0, Depth = 2, Score = **3.75** ($7.5 \\times (1 + 0) / 2$)\n   - **Reason:** High severity, but no downstream callers; blast radius is isolated.\n\n---\n\n### Execution Steps & Cypher Queries\n\n1. **Tool:** `find_exposed_services`\n   - **Why:** Identify all services reaching CVE-2022-24999 and the affected package versions.\n   - **Cypher:**\n     ```cypher\n     MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases\n     RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label\n     ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1;\n     ```\n     ```cypher\n     MATCH (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"})<-[:AFFECTED_BY]-(v:PackageVersion)\n     MATCH p = (s:Service)-[:DEPENDS_ON*1..]->(v)\n     RETURN s.name, v.id, min(length(p)) AS depth ORDER BY depth, s.name;\n     ```\n\n2. **Tool:** `draft_remediation` (called for each of the 8 services)\n   - **Why:** Calculate prioritization metrics (severity, downstream services, depth, score) and draft remediation plans for approval.\n   - **Cypher (repeated per service `$SERVICE`):**\n     ```cypher\n     MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases\n     RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label\n     ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1;\n     ```\n     ```cypher\n     MATCH (s:Service {name: $SERVICE}), (c:CVE {id: \"GHSA-hrpp-h998-j3pp\"})\n     WITH shortestPath((s)-[:DEPENDS_ON|AFFECTED_BY*]->(c)) AS p\n     RETURN [n IN nodes(p) | coalesce(n.id, n.name)], relationships(p)[-1].fixed;\n     ```\n     ```cypher\n     MATCH (s:Service {name: $SERVICE})\n     OPTIONAL MATCH (x:Service)-[:CALLS*1..]->(s) WHERE x <> s\n     RETURN s.name, collect(DISTINCT x.name);\n     ```\n\n3. **Tool:** `best_single_fix`\n   - **Why:** Identify the single package upgrade providing the highest exposure reduction for this CVE.\n   - **Cypher:**\n     ```cypher\n     MATCH (c:CVE) WHERE c.id = \"CVE-2022-24999\" OR \"CVE-2022-24999\" IN c.aliases\n     RETURN c.id, c.aliases, c.severity, c.summary, c.severity_label\n     ORDER BY CASE WHEN c.id = \"CVE-2022-24999\" THEN 0 ELSE 1 END, c.id LIMIT 1;\n     ```\n     ```cypher\n     MATCH (v:PackageVersion)-[:AFFECTED_BY]->(:CVE {id: \"GHSA-hrpp-h998-j3pp\"})\n     MATCH (v:PackageVersion)-[a:AFFECTED_BY]->(c:CVE)\n     WITH v, collect(DISTINCT [c.id, a.fixed]) AS cf\n     OPTIONAL MATCH (s:Service)-[:DEPENDS_ON*1..]->(v)\n     RETURN v.id, cf, count(DISTINCT s) AS n\n     ORDER BY n DESC, size(cf) DESC, v.id LIMIT 5;\n     ```"
  },
  "which single upgrade fixes the most services?": {
   "question": "Which single upgrade fixes the most services?",
