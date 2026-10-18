@@ -17,7 +17,7 @@ Each answer shows the path, the Cypher it ran, and why.
 ## Setup
 
 ```bash
-docker run -d --name blastradius-db -p 6379:6379 -p 3000:3000 falkordb/falkordb:latest
+docker run -d --name blastradius-db -p 6379:6379 -p 3000:3000 -e FALKORDB_AUTO_CONNECT=true falkordb/falkordb:latest
 python -m venv .venv
 .venv\Scripts\python -m pip install -r requirements.txt
 .venv\Scripts\python load.py
