@@ -8,9 +8,12 @@ import asyncio
 import json
 import os
 import re
+import socket
 import sys
 import time
 import traceback
+import urllib.error
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -75,6 +78,27 @@ def blast(service, cve_id):
             "edges": [[a, b] for a, b in calls if a in seen and b in seen], "exposed": exposed, "cypher": log}
 
 
+def get_browser_port():
+    if "FALKORDB_BROWSER_PORT" in os.environ:
+        return int(os.environ["FALKORDB_BROWSER_PORT"])
+    for p in (3000, 3001):
+        try:
+            with socket.create_connection(("127.0.0.1", p), timeout=0.1):
+                return p
+        except OSError:
+            pass
+    return 3000
+
+
+def is_browser_path(path_str):
+    p = urlparse(path_str).path
+    if p.startswith(("/_next/", "/graph", "/login", "/udf", "/docs", "/settings")) or p == "/favicon.ico":
+        return True
+    if p.startswith("/api/"):
+        return p not in ("/api/status", "/api/blast", "/api/ask", "/api/approve")
+    return False
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):  # quiet: only the agent's own prints
         pass
@@ -87,7 +111,62 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def proxy_browser(self):
+        port = get_browser_port()
+        url = f"http://127.0.0.1:{port}{self.path}"
+        req_body = None
+        content_len = int(self.headers.get("Content-Length", 0))
+        if content_len > 0:
+            req_body = self.rfile.read(content_len)
+
+        headers = {}
+        for k, v in self.headers.items():
+            if k.lower() not in ("host", "content-length", "accept-encoding"):
+                headers[k] = v
+        headers["Host"] = f"127.0.0.1:{port}"
+
+        req = urllib.request.Request(url, data=req_body, headers=headers, method=self.command)
+        try:
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = resp.read()
+                self.send_response(resp.status)
+                for k, v in resp.headers.items():
+                    if k.lower() not in ("transfer-encoding", "content-length", "content-encoding"):
+                        self.send_header(k, v)
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+        except urllib.error.HTTPError as e:
+            err_data = e.read()
+            self.send_response(e.code)
+            for k, v in e.headers.items():
+                if k.lower() not in ("transfer-encoding", "content-length", "content-encoding"):
+                    self.send_header(k, v)
+            self.send_header("Content-Length", str(len(err_data)))
+            self.end_headers()
+            self.wfile.write(err_data)
+        except Exception as e:
+            self.reply(502, {"error": f"FalkorDB Browser offline: {e}"})
+
+    def do_OPTIONS(self):
+        if is_browser_path(self.path):
+            return self.proxy_browser()
+        self.send_response(204)
+        self.end_headers()
+
+    def do_PUT(self):
+        if is_browser_path(self.path):
+            return self.proxy_browser()
+        self.reply(405, {"error": "method not allowed"})
+
+    def do_DELETE(self):
+        if is_browser_path(self.path):
+            return self.proxy_browser()
+        self.reply(405, {"error": "method not allowed"})
+
     def do_GET(self):
+        if is_browser_path(self.path):
+            return self.proxy_browser()
         url = urlparse(self.path)
         qs = {k: v[0] for k, v in parse_qs(url.query).items()}
         if url.path in ("/", "/index.html"):
@@ -107,6 +186,8 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(404, {"error": "not found"})
 
     def do_POST(self):
+        if is_browser_path(self.path):
+            return self.proxy_browser()
         if urlparse(self.path).path != "/api/approve":
             return self.reply(404, {"error": "not found"})
         try:

@@ -227,7 +227,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       BlastRadius
     </div>
     <div class="stats" id="stats" aria-live="polite">
-      <a href="http://localhost:3001" id="db-link" target="_blank" rel="noopener" class="db-link" title="Open FalkorDB Browser"><i class="ti ti-database" aria-hidden="true"></i> FalkorDB graph <b>blastradius</b></a>
+      <a href="/graph" id="db-link" target="_blank" rel="noopener" class="db-link" title="Open FalkorDB Browser"><i class="ti ti-database" aria-hidden="true"></i> FalkorDB graph <b>blastradius</b></a>
       <span><b id="st-s">–</b> services (synthetic)</span>
       <span><b id="st-v">–</b> npm versions</span>
       <span><b id="st-c">–</b> CVEs <span class="opt">from OSV</span></span>
@@ -311,21 +311,6 @@ function fresh() {
 }
 
 /* ---------- status ---------- */
-const dbLink = $("db-link");
-if (dbLink) {
-  const host = window.location.hostname;
-  if (host && host !== "localhost" && host !== "127.0.0.1") {
-    if (host.includes("render.com")) {
-      dbLink.title = "FalkorDB Browser runs on internal ports. Use the center canvas for interactive graph visualization!";
-      dbLink.addEventListener("click", (e) => {
-        alert("FalkorDB Browser UI runs locally or on internal container ports.\n\nOn Render, please use the interactive BlastRadius dependency graph rendered directly in the center panel!");
-        e.preventDefault();
-      });
-    } else {
-      dbLink.href = `http://${host}:3001`;
-    }
-  }
-}
 
 fetch("/api/status").then((r) => r.json()).then((s) => {
   $("st-s").textContent = s.services; $("st-v").textContent = s.versions; $("st-c").textContent = s.cves;

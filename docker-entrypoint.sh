@@ -20,5 +20,16 @@ done
 echo "==> Loading graph data..."
 python3 load.py
 
+# Start FalkorDB Browser in background on port 3000 with auto-connect
+if [ -d "/var/lib/falkordb/browser" ]; then
+  echo "==> Starting FalkorDB Browser on port 3000 with auto-connect..."
+  (cd /var/lib/falkordb/browser && \
+   FALKORDB_CONNECTION_URL="falkor://127.0.0.1:6379" \
+   FALKORDB_AUTO_CONNECT=true \
+   PORT=3000 \
+   HOSTNAME="0.0.0.0" \
+   ./docker-entrypoint.sh node server.js >/tmp/browser.log 2>&1) &
+fi
+
 echo "==> Starting web server on :${PORT:-8000}..."
 exec python3 web.py
