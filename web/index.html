@@ -35,6 +35,11 @@ button, textarea { font: inherit; color: inherit; }
 .brand svg { width: 24px; height: 24px; }
 .stats { display: flex; gap: 18px; color: var(--muted); font-size: 13px; padding-left: 20px; border-left: 1px solid var(--seam); }
 .stats b { color: var(--text); font: 500 13px var(--mono); }
+.db-link { display: flex; align-items: center; gap: 5px; color: var(--muted); text-decoration: none; transition: color .15s; }
+.db-link:hover { color: var(--keyword); }
+.db-link b { color: var(--text); font: 500 13px var(--mono); transition: color .15s; }
+.db-link:hover b { color: var(--keyword); }
+
 .mode { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); white-space: nowrap; }
 .mode .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); }
 .mode[data-mode="live"] .dot { background: var(--string); }
@@ -222,7 +227,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
       BlastRadius
     </div>
     <div class="stats" id="stats" aria-live="polite">
-      <span>FalkorDB graph <b>blastradius</b></span>
+      <a href="http://localhost:3001" target="_blank" rel="noopener" class="db-link" title="Open FalkorDB Browser"><i class="ti ti-database" aria-hidden="true"></i> FalkorDB graph <b>blastradius</b></a>
       <span><b id="st-s">–</b> services (synthetic)</span>
       <span><b id="st-v">–</b> npm versions</span>
       <span><b id="st-c">–</b> CVEs <span class="opt">from OSV</span></span>
